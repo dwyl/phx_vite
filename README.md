@@ -1,5 +1,6 @@
 # ExVite
 
+ 
 - in "/", create `pnpm-workspace.yaml` (use "yaml", not "yml")
 - in "/assets", `pnpm init` and set `"type": "module"`
 - add packages with `pnpm add -D tailwindcss` or `pnpm remove tailwindcss` 
@@ -18,3 +19,5 @@ Run:
 PORT=4001 iex -S mix phx.server
 DEBUG=vite:* pnpm vite serve --mode development --config vite.config.js
 ```
+
+A blog: <https://dev.to/ndrean/phoenix-vite-dev-setup-195i>
