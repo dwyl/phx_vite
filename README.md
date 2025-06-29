@@ -1,5 +1,6 @@
 # ExVite
 
+[TODO] a mix task?
  
 - in "/", create `pnpm-workspace.yaml` (use "yaml", not "yml")
 - in "/assets", `pnpm init` and set `"type": "module"`
