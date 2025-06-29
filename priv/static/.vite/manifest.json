@@ -1,0 +1,19 @@
+{
+  "css/app.css": {
+    "file": "assets/app-DRM-CD-3.css",
+    "src": "css/app.css",
+    "isEntry": true,
+    "names": [
+      "app.css"
+    ]
+  },
+  "js/app.js": {
+    "file": "assets/app-B41uDEYp.js",
+    "name": "app",
+    "src": "js/app.js",
+    "isEntry": true,
+    "css": [
+      "assets/app-DRM-CD-3.css"
+    ]
+  }
+}

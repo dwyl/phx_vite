@@ -1,0 +1,11 @@
+packages:
+  - assets
+  - deps/phoenix
+  - deps/phoenix_html
+  - deps/phoenix_live_view
+
+ignoredBuiltDependencies:
+  - esbuild
+
+onlyBuiltDependencies:
+  - '@tailwindcss/oxide'

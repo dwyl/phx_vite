@@ -1,0 +1,27 @@
+{
+  "name": "assets",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.12.4",
+  "dependencies": {
+    "fast-glob": "^3.3.3",
+    "phoenix": "workspace:*",
+    "phoenix_html": "workspace:*",
+    "phoenix_live_view": "workspace:*",
+    "topbar": "^3.0.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.1.11",
+    "daisyui": "^5.0.43",
+    "tailwindcss": "^4.1.11",
+    "vite": "^7.0.0"
+  }
+}
