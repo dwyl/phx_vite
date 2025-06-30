@@ -50,26 +50,36 @@ function copyStaticAssetsDev() {
 }
 
 function getEntryPoints() {
-  return {
-    app: "js/app.js",
-    "app.css": "css/app.css",
-  };
+  const entries = [];
+  fg.sync([`${jsDir}/**/*.{js,jsx,ts,tsx}`]).forEach((file) => {
+    if (/\.(js|jsx|ts|tsx)$/.test(file)) {
+      entries.push(path.resolve(rootDir, file));
+    }
+  });
+  // Add WASM & CSS explicitly
+  // entries.push(path.resolve(cssDir, "app.css"));
+  // entries.push(path.resolve(wasmDir, "great_circle.wasm"));
+
+  fg.sync([`${srcImgDir}/**/*.*`]).forEach((file) => {
+    if (/\.(jpg|png|svg|webp)$/.test(file)) {
+      entries.push(path.resolve(rootDir, file));
+    }
+  });
+
+  return entries;
 }
 
 const buildOps = (mode) => ({
   target: ["esnext"],
   // Specify the directory to nest generated assets under (relative to build.outDir
   outDir: staticDir,
-  cssCodeSplit: true, // Split CSS for better caching
+  cssCodeSplit: mode === 'production', // Split CSS for better caching
   cssMinify: mode === "production" && "lightningcss", // Use lightningcss for CSS minification
   rollupOptions: {
     input:
       mode === "production"
         ? getEntryPoints()
-        : {
-            app: "js/app.js",
-            "app.css": "css/app.css",
-          },
+        : ["js/app.js"],
     output: mode === "production" && {
       assetFileNames: "assets/[name]-[hash][extname]",
       chunkFileNames: "assets/[name]-[hash].js",
@@ -79,7 +89,7 @@ const buildOps = (mode) => ({
   // generate a manifest file that contains a mapping of non-hashed asset filenames
   // to their hashed versions, which can then be used by a server framework
   // to render the correct asset links.
-  manifest: true,
+  manifest: mode === 'production',
   path: ".vite/manifest.json",
   minify: mode === "production",
   emptyOutDir: true, // Remove old assets
@@ -111,7 +121,7 @@ export default defineConfig(({ command, mode }) => {
   return {
     base: "/",
     plugins: [tailwindcss()],
-    server: devServer,
+    server: mode === 'development' && devServer,
     build: buildOps(mode),
     publicDir: false,
   };
