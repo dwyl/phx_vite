@@ -3,6 +3,7 @@ import tailwindcss from "@tailwindcss/vite";
 import path from "path";
 import fs from "fs";
 import fg from "fast-glob";
+import { viteStaticCopy } from "vite-plugin-static-copy";
 
 const rootDir = path.resolve(import.meta.dirname);
 const cssDir = path.resolve(rootDir, "css");
@@ -107,6 +108,37 @@ const devServer = {
   },
 };
 
+const getBuildTargets = () => {
+  const baseTargets = [];
+
+  // Only add targets if source directories exist
+  if (fs.existsSync(seoDir)) {
+    baseTargets.push({
+      src: path.resolve(seoDir, "**", "*"),
+      dest: path.resolve(staticDir),
+    });
+  }
+
+  if (fs.existsSync(iconsDir)) {
+    baseTargets.push({
+      src: path.resolve(iconsDir, "**", "*"),
+      dest: path.resolve(staticDir, "icons"),
+    });
+  }
+
+  if (fs.existsSync(wasmDir)) {
+    baseTargets.push({
+      src: path.resolve(wasmDir, "**", "*.wasm"),
+      dest: path.resolve(staticDir, "wasm"),
+    });
+  }
+
+  const devManifestPath = path.resolve(staticDir, "manifest.webmanifest");
+  fs.writeFileSync(devManifestPath, JSON.stringify(manifestOpts, null, 2));
+
+  return baseTargets;
+};
+
 export default defineConfig(({ command, mode }) => {
   if (command == "serve") {
     console.log("[vite.config] Running in development mode");
@@ -117,7 +149,10 @@ export default defineConfig(({ command, mode }) => {
 
   return {
     base: "/",
-    plugins: [tailwindcss()],
+    plugins: [
+      tailwindcss(),
+      viteStaticCopy({ targets: getBuildTargets() })
+    ],
     server: mode === 'development' && devServer,
     build: buildOps(mode),
     publicDir: false,
