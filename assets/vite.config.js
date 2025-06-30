@@ -56,9 +56,6 @@ function getEntryPoints() {
       entries.push(path.resolve(rootDir, file));
     }
   });
-  // Add WASM & CSS explicitly
-  // entries.push(path.resolve(cssDir, "app.css"));
-  // entries.push(path.resolve(wasmDir, "great_circle.wasm"));
 
   fg.sync([`${srcImgDir}/**/*.*`]).forEach((file) => {
     if (/\.(jpg|png|svg|webp)$/.test(file)) {
