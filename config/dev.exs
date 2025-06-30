@@ -16,7 +16,7 @@ config :ex_vite, ExVite.Repo,
 config :ex_vite, ExViteWeb.Endpoint,
   # Binding to loopback ipv4 address prevents access from other machines.
   # Change to `ip: {0, 0, 0, 0}` to allow access from other machines.
-  http: [ip: {127, 0, 0, 1}, port: 4001],
+  http: [ip: {127, 0, 0, 1}, port: 4000],
   check_origin: false,
   debug_errors: true,
   secret_key_base: "m22layVMDOiXYK0bwXp7VHOORe1QHHYSHAYbhUteQWteNz5AHIy5ZW3rfQ8TU7Sg",
@@ -28,19 +28,18 @@ config :ex_vite, ExViteWeb.Endpoint,
       ~r"lib/ex_vite_web/(controllers|live|components)/.*(ex|heex)$",
       ~r"lib/liveview_pwa_web/.*/.*\.heex$"
     ]
+  ],
+  watchers: [
+    pnpm: [
+      "vite",
+      "serve",
+      "--mode",
+      "development",
+      "--config",
+      "vite.config.js",
+      cd: Path.expand("../assets", __DIR__)
+    ]
   ]
-
-# watchers: [
-#   pnpm: [
-#     "vite",
-#     "serve",
-#     "--mode",
-#     "development",
-#     "--config",
-#     "vite.config.js",
-#     cd: Path.expand("../assets", __DIR__)
-#   ]
-# ]
 
 # ## SSL Support
 #

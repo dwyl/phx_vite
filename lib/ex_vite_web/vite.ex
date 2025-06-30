@@ -17,7 +17,8 @@ else
 
     # Ensure the manifest is loaded at compile time in production
     def path(asset) do
-      manifest = get_manifest()
+      app_name = :ex_vite
+      manifest = get_manifest(app_name)
 
       case Path.extname(asset) do
         ".css" ->
@@ -28,8 +29,9 @@ else
       end
     end
 
-    defp get_manifest do
-      manifest_path = Path.join(:code.priv_dir(:liveview_pwa), "static/.vite/manifest.json")
+    defp get_manifest(app_name) do
+      manifest_path =
+        Path.join(:code.priv_dir(app_name), "static/.vite/manifest.json")
 
       with {:ok, content} <- File.read(manifest_path),
            {:ok, decoded} <- Jason.decode(content) do
@@ -44,7 +46,7 @@ else
       |> Enum.flat_map(fn {_key, entry} ->
         Map.get(entry, "css", [])
       end)
-      |> Enum.filter(fn file -> String.contains?(file, "main") end)
+      |> Enum.filter(fn file -> String.contains?(file, "app") end)
       |> List.first()
     end
 

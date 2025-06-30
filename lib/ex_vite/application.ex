@@ -9,9 +9,9 @@ defmodule ExVite.Application do
   def start(_type, _args) do
     children = [
       ExViteWeb.Telemetry,
-      ExVite.Repo,
-      {Ecto.Migrator,
-       repos: Application.fetch_env!(:ex_vite, :ecto_repos), skip: skip_migrations?()},
+      # ExVite.Repo,
+      # {Ecto.Migrator,
+      #  repos: Application.fetch_env!(:ex_vite, :ecto_repos), skip: skip_migrations?()},
       {DNSCluster, query: Application.get_env(:ex_vite, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: ExVite.PubSub},
       # Start a worker by calling: ExVite.Worker.start_link(arg)
@@ -34,8 +34,8 @@ defmodule ExVite.Application do
     :ok
   end
 
-  defp skip_migrations?() do
-    # By default, sqlite migrations are run when using a release
-    System.get_env("RELEASE_NAME") == nil
-  end
+  # defp skip_migrations?() do
+  #   # By default, sqlite migrations are run when using a release
+  #   System.get_env("RELEASE_NAME") == nil
+  # end
 end

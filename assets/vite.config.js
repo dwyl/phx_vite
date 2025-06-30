@@ -71,13 +71,10 @@ const buildOps = (mode) => ({
   target: ["esnext"],
   // Specify the directory to nest generated assets under (relative to build.outDir
   outDir: staticDir,
-  cssCodeSplit: mode === 'production', // Split CSS for better caching
-  cssMinify: mode === "production" && "lightningcss", // Use lightningcss for CSS minification
+  cssCodeSplit: mode === "production", // Split CSS for better caching
+  // cssMinify: mode === "production" && "lightningcss", // Use lightningcss for CSS minification
   rollupOptions: {
-    input:
-      mode === "production"
-        ? getEntryPoints()
-        : ["js/app.js"],
+    input: mode === "production" ? getEntryPoints() : ["js/app.js"],
     output: mode === "production" && {
       assetFileNames: "assets/[name]-[hash][extname]",
       chunkFileNames: "assets/[name]-[hash].js",
@@ -87,7 +84,7 @@ const buildOps = (mode) => ({
   // generate a manifest file that contains a mapping of non-hashed asset filenames
   // to their hashed versions, which can then be used by a server framework
   // to render the correct asset links.
-  manifest: mode === 'production',
+  manifest: mode === "production",
   path: ".vite/manifest.json",
   minify: mode === "production",
   emptyOutDir: true, // Remove old assets
@@ -97,7 +94,7 @@ const buildOps = (mode) => ({
 });
 
 const devServer = {
-  cors: { origin: "http://localhost:4001" },
+  cors: { origin: "http://localhost:4000" },
   allowedHosts: ["localhost"],
   strictPort: true,
   origin: "http://localhost:5174", // Vite dev server origin
@@ -126,15 +123,21 @@ const getBuildTargets = () => {
     });
   }
 
-  if (fs.existsSync(wasmDir)) {
-    baseTargets.push({
-      src: path.resolve(wasmDir, "**", "*.wasm"),
-      dest: path.resolve(staticDir, "wasm"),
-    });
-  }
+  // if (fs.existsSync(wasmDir)) {
+  //   baseTargets.push({
+  //     src: path.resolve(wasmDir, "**", "*.wasm"),
+  //     dest: path.resolve(staticDir, "wasm"),
+  //   });
+  // }
 
   const devManifestPath = path.resolve(staticDir, "manifest.webmanifest");
-  fs.writeFileSync(devManifestPath, JSON.stringify(manifestOpts, null, 2));
+  if (fs.existsSync(devManifestPath)) {
+    //   baseTargets.push({
+    //     src: devManifestPath,
+    //     dest: staticDir,
+    //   });
+    fs.writeFileSync(devManifestPath, JSON.stringify(manifestOpts, null, 2));
+  }
 
   return baseTargets;
 };
@@ -142,7 +145,7 @@ const getBuildTargets = () => {
 export default defineConfig(({ command, mode }) => {
   if (command == "serve") {
     console.log("[vite.config] Running in development mode");
-    copyStaticAssetsDev();
+    // copyStaticAssetsDev();
     process.stdin.on("close", () => process.exit(0));
     process.stdin.resume();
   }
@@ -151,9 +154,11 @@ export default defineConfig(({ command, mode }) => {
     base: "/",
     plugins: [
       tailwindcss(),
-      viteStaticCopy({ targets: getBuildTargets() })
+      // mode === "production"
+      viteStaticCopy({ targets: getBuildTargets() }),
+      // : null,
     ],
-    server: mode === 'development' && devServer,
+    server: mode === "development" && devServer,
     build: buildOps(mode),
     publicDir: false,
   };
