@@ -28,11 +28,13 @@ All your static assets should be organised in the "/assets" folder with the stru
 
 In DEV mode, `Phoenix` code reload will only listen to `ex|heex` files changes while `Vite` HMR will manage the `j(t)s(x)` files.
 
-In PROD mode, `Vite` will build and bundle your assets if you structure your assets as shown below; you do not need to add anything in the "/priv/static" folder but instead in the "/assets" folder. For example, you add "robots.txt" and "sitemap.xml" in "/assets/seo". The __vite.config.js__ settings will populate the "/priv/static/asssets" folder with fingerprinted files, and copy the non-fingerprinted files. You do not need `mix phx.digest` anymore.
+In PROD mode, `Vite` will build and bundle your assets if you structure your assets as shown above.
 
-```
-/assets/{js,css,images,icons,seo}
-```
+You do not need to add anything in the "/priv/static" folder but instead in the "/assets" folder.
+For example, you add "robots.txt" and "sitemap.xml" in "/assets/seo".
+
+The __vite.config.js__ settings will populate the "/priv/static/asssets" folder with fingerprinted files, and copy the non-fingerprinted files. You do not need `mix phx.digest` anymore.
+
 
 You let `Phoenix` serve, for example:
 
