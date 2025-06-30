@@ -1,8 +1,7 @@
 # ExVite
 
-[TODO] a mix task?
 
-A configuration to use `Vite` with `Phoenix LiveView`.
+A configuration to use `Vite` with `Phoenix LiveView`. [TODO] a mix task?
 
 
  __How?__ The documentation: <https://vite.dev/guide/backend-integration.html>
