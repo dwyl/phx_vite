@@ -3,7 +3,7 @@
 
 @import "tailwindcss" source(none);
 @source "../css";
-@source "../js";
+@source "../**/.*{js, jsx}";
 @source "../../lib/ex_vite_web/";
 
 /* A Tailwind plugin that makes "hero-#{ICON}" classes available.
