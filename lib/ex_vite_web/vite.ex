@@ -3,9 +3,9 @@ if Application.compile_env!(:ex_vite, :env) == :dev do
     @moduledoc """
     A helper module to manage Vite file discovery.
 
-    It appends "http://localhost:5173" in DEV mode.
+    In dev mode, it appends "http://localhost:5173" so that Phoenix will proxy static assets requests to the Vite server.
 
-    It finds the fingerprinted name in PROD mode from the .vite/manifest.json file.
+    In prod mode, it finds the fingerprinted name from the .vite/manifest.json dictionary.
     """
     def path(asset) do
       "http://localhost:5174/#{asset}"
