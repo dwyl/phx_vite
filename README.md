@@ -20,23 +20,41 @@ __What?__ In DEV mode, you will be running a `Vite` dev server on port 5173 and 
 - go to "/" and run `pnpm install`.
 - change the __app_name__ in "Vite.ex"
 
+
+In DEV mode, `Phoenix` code reload will only listen to `ex|heex` files changes while `Vite` HMR will manage the `j(t)s(x)` files.
+
+In PROD mode, `Vite` will build and bundle your assets if you structure your assets as shown above.
+
+### Static assets
+
 All your static assets should be organised in the "/assets" folder with the structure:
 
 ```
 /assest/{js,css,seo, fonts, icons, images, wasm,...}
 ```
 
-In DEV mode, `Phoenix` code reload will only listen to `ex|heex` files changes while `Vite` HMR will manage the `j(t)s(x)` files.
+Do not add anything in the "/priv/static" folder as it will be pruned but instead in the "/assets" folder.
 
-In PROD mode, `Vite` will build and bundle your assets if you structure your assets as shown above.
+The __vite.config.js__ settings will populate the "/priv/static/asssets" folder with fingerprinted files, and copy the non-fingerprinted files into "/priv/static".
 
-You do not need to add anything in the "/priv/static" folder but instead in the "/assets" folder.
-For example, you add "robots.txt" and "sitemap.xml" in "/assets/seo".
+Note that this also means you do not need `mix phx.digest` anymore in the build stage.
 
-The __vite.config.js__ settings will populate the "/priv/static/asssets" folder with fingerprinted files, and copy the non-fingerprinted files. You do not need `mix phx.digest` anymore.
+For example, you have non-fingerprinted assets such as "robots.txt" and "sitemap.xml".
+You place them in "/assets/seo" and these files will by copied in the "priv/static" folder and will be served by Phoenix.
+For example, all your icons are placed in the folder "assets/icons" and will be copied in "priv/static/icons", and served by Phoenix.
+
+The other fingerprinted static assets that are referenced in Elixir modules will use the helper `Vite.path/1`.
+
+For example: in the __techs.ex__ module, we display a fingerprinted asset:
+
+`<img src={Vite.path("images/my.svg"} alt="an-svg" loading="lazy" />`
+
+These images are placed in the folder "assets/iamges" and are fingerprinted.
+
+Static assets referenced in JS code will be referenced as "normal".
 
 
-You let `Phoenix` serve, for example:
+You let `Phoenix` serve the assets.
 
 ```elixir
 def static_paths, do: ~w(
