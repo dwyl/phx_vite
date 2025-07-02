@@ -69,6 +69,44 @@ const devServer = {
   },
 };
 
+// -- DEV mod --
+function copyStaticAssetsDev() {
+  console.log("[vite.config] Copying non-fingerprinted assets in dev mode...");
+
+  const copyTargets = [
+    {
+      srcDir: seoDir,
+      destDir: staticDir, // place directly into priv/static
+    },
+    {
+      srcDir: iconsDir,
+      destDir: path.resolve(staticDir, "icons"),
+    },
+  ];
+
+  copyTargets.forEach(({ srcDir, destDir }) => {
+    if (!fs.existsSync(srcDir)) {
+      console.log(`[vite.config] Source dir not found: ${srcDir}`);
+      return;
+    }
+    if (!fs.existsSync(destDir)) {
+      fs.mkdirSync(destDir, { recursive: true });
+    }
+
+    fg.sync(`${srcDir}/**/*.*`).forEach((srcPath) => {
+      const relPath = path.relative(srcDir, srcPath);
+      const destPath = path.join(destDir, relPath);
+      const destSubdir = path.dirname(destPath);
+      if (!fs.existsSync(destSubdir)) {
+        fs.mkdirSync(destSubdir, { recursive: true });
+      }
+
+      fs.copyFileSync(srcPath, destPath);
+    });
+  });
+}
+
+// --- PROD mode ---
 const getBuildTargets = () => {
   const baseTargets = [];
 
@@ -109,7 +147,7 @@ const getBuildTargets = () => {
 export default defineConfig(({ command, mode }) => {
   if (command == "serve") {
     console.log("[vite.config] Running in development mode");
-    // copyStaticAssetsDev();
+    copyStaticAssetsDev();
     process.stdin.on("close", () => process.exit(0));
     process.stdin.resume();
   }
