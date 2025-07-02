@@ -35,8 +35,6 @@ const buildOps = (mode) => ({
   target: ["esnext"],
   // Specify the directory to nest generated assets under (relative to build.outDir
   outDir: staticDir,
-  cssCodeSplit: mode === "production", // Split CSS for better caching
-  // cssMinify: mode === "production" && "lightningcss", // Use lightningcss for CSS minification
   rollupOptions: {
     input: mode === "production" ? getEntryPoints() : ["js/app.js"],
     output: mode === "production" && {
@@ -45,6 +43,7 @@ const buildOps = (mode) => ({
       entryFileNames: "assets/[name]-[hash].js",
     },
   },
+  cssMinify: true,
   // generate a manifest file that contains a mapping of non-hashed asset filenames
   // to their hashed versions, which can then be used by a server framework
   // to render the correct asset links.
