@@ -26,7 +26,7 @@ config :ex_vite, ExViteWeb.Endpoint,
     patterns: [
       ~r"priv/gettext/.*(po)$",
       ~r"lib/ex_vite_web/(controllers|live|components|channels)/.*(ex|heex)$",
-      ~r"lib/liveview_pwa_web/.*/.*\.heex$"
+      ~r"lib/ex_vite_web/.*/.*\.heex$"
     ]
   ],
   watchers: [
