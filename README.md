@@ -202,9 +202,11 @@ const buildOps = (mode) => ({
 });
 ```
 
-The `getEntryPoints()` function is detailed in the __vite.config.js__ part. It is a list of all your files that will be fingerprinted.
+In PROD mode, the `getEntryPoints()` function is used to list of all your files that will be fingerprinted.
 
-The other static assets should by copied with the plugin `viteStaticCopy` to which we pass a list of objects (source, destination). These are eg SEO files (robots.txt, sitemap.xml), and your icons, fonts ...
+Also in PROD mode, the other static assets (non-fingerprinted) should by copied with the plugin `viteStaticCopy` to which we pass a list of objects (source, destination). These are eg SEO files (robots.txt, sitemap.xml), and your icons, fonts ...
+
+In DEV mode, we will let Phoenix serve these non fingerprinted assets. We therefor need to copy them to "/priv/static" (remember this folder is cleared on each build). This is done withe a helper in __vite.config.js__.
 
 ### Server options
 
@@ -342,6 +344,7 @@ Alternatively, if you don't use workspace, then reference directly the relative 
 
 @import 'tailwindcss' source(none);
 
+@source "../css";
 @source "../**/.*{js, jsx}";
 @source "../../lib/my_app_web/";
 
@@ -559,6 +562,45 @@ const buildOps = (mode) => ({
 Static assets served by Phoenix via the plugin `viteStaticCopy`
 => add other folders like assets/fonts...if needed
 */
+
+// DEV mode: copy non fingerprinted from /assets to /priv/static
+function copyStaticAssetsDev() {
+  console.log("[vite.config] Copying non-fingerprinted assets in dev mode...");
+
+  const copyTargets = [
+    {
+      srcDir: seoDir,
+      destDir: staticDir, // place directly into priv/static
+    },
+    {
+      srcDir: iconsDir,
+      destDir: path.resolve(staticDir, "icons"),
+    },
+  ];
+
+  copyTargets.forEach(({ srcDir, destDir }) => {
+    if (!fs.existsSync(srcDir)) {
+      console.log(`[vite.config] Source dir not found: ${srcDir}`);
+      return;
+    }
+    if (!fs.existsSync(destDir)) {
+      fs.mkdirSync(destDir, { recursive: true });
+    }
+
+    fg.sync(`${srcDir}/**/*.*`).forEach((srcPath) => {
+      const relPath = path.relative(srcDir, srcPath);
+      const destPath = path.join(destDir, relPath);
+      const destSubdir = path.dirname(destPath);
+      if (!fs.existsSync(destSubdir)) {
+        fs.mkdirSync(destSubdir, { recursive: true });
+      }
+
+      fs.copyFileSync(srcPath, destPath);
+    });
+  });
+}
+
+// PROD config for `viteStaticCopy`
 const getBuildTargets = () => {
   const baseTargets = [];
 
@@ -611,6 +653,7 @@ const devServer = {
 export default defineConfig(({ command, mode }) => {
   if (command == "serve") {
     console.log("[vite.config] Running in development mode");
+    copyStaticAssetsDev();
     process.stdin.on("close", () => process.exit(0));
     process.stdin.resume();
   }
