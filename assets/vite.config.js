@@ -63,9 +63,6 @@ const devServer = {
   origin: "http://localhost:5174", // Vite dev server origin
   port: 5174, // Vite dev server port
   host: "localhost", // Vite dev server host
-  watch: {
-    ignored: ["**/priv/static/**", "**/lib/**", "**/*.ex", "**/*.exs"],
-  },
 };
 
 // -- DEV mod --
