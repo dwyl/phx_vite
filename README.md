@@ -21,9 +21,6 @@ __What?__ In DEV mode, you will be running a `Vite` dev server on port 5173 and 
 - change the __app_name__ in "Vite.ex" and the folder name in "assets/css/app.css"
 
 
-
-In PROD mode, `Vite` will build and bundle your assets if you structure your assets as shown above.
-
 ### Static assets
 
 All your static assets should be organised in the "/assets" folder with the structure:
