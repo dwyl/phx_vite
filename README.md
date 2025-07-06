@@ -9,7 +9,7 @@ An example of a configuration to use `Vite` with `Phoenix LiveView`. [TODO] a mi
 
 __Why?__ `Vite`does not bundle the code in development which means the dev server is fast to start, and your changes will be updated instantly. You can easily bring in plugins such as VitePWA with Workbox, or ZSTD compression, client-side SVG integration, React, Svelte, Solid... and [more](https://github.com/vitejs/awesome-vite#plugins). In production, `Vite` bundles the code, with tree-shaking...
 
-__What?__ In DEV mode, you will be running a `Vite` dev server on port 5173 and `Phoenix` on port 4000. Changes in `.ex|.heex` files will be controlled by `Phoenix` code_reload whilst `.js |.css | .jsx..` changes will be controlled by `Vite`.
+__What?__ In DEV mode, you will be running a `Vite` dev server on port 5173 and `Phoenix` on port 4000.
 
 
 ## Setup
@@ -20,8 +20,6 @@ __What?__ In DEV mode, you will be running a `Vite` dev server on port 5173 and 
 - go to "/" and run `pnpm install`.
 - change the __app_name__ in "Vite.ex"
 
-
-In DEV mode, `Phoenix` code reload will only listen to `ex|heex` files changes while `Vite` HMR will manage the `j(t)s(x)` files.
 
 In PROD mode, `Vite` will build and bundle your assets if you structure your assets as shown above.
 
@@ -92,8 +90,6 @@ Define a config "env" variable:
 
 config :my_app, :env, config_env()
 ```
-
-Let `Phoenix` only  watch  `ex|heex` files, and run the `Vite` dev server (ie ignore `js`, `svg`,..., everything else)
 
 ```elixir
 # dev.exs
@@ -210,8 +206,6 @@ In DEV mode, we will let Phoenix serve these non fingerprinted assets. We theref
 
 ### Server options
 
-> Ignore `.ex|.heex` files changes.
-
 ```js
 // vite.config.js
 
@@ -222,9 +216,6 @@ const devServer = {
   origin: "http://localhost:5173", // Vite dev server origin
   port: 5173, // Vite dev server port
   host: "localhost", // Vite dev server host
-  watch: {
-    ignored: ["**/priv/static/**", "**/lib/**", "**/*.ex", "**/*.exs"],
-  },
 };
 ```
 
@@ -645,9 +636,6 @@ const devServer = {
   origin: "http://localhost:5173", // Vite dev server origin
   port: 5173, // Vite dev server port
   host: "localhost", // Vite dev server host
-  watch: {
-    ignored: ["**/priv/static/**", "**/lib/**", "**/*.ex", "**/*.exs"],
-  },
 };
 
 export default defineConfig(({ command, mode }) => {
