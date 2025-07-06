@@ -104,8 +104,7 @@ config :my_app, MyAppWeb.Endpoint,
   live_reload: [
     web_console_logger: true,
     patterns: [
-      ~r"lib/my_app_web/(controllers|live|components|router|channels)/.*\.(ex|heex)$",
-      ~r"lib/my_app_web/.*/.*\.heex$"
+      ~r"lib/(my_app|my_app_web)/.*\.(ex|heex)$"
     ]
   ],
   watchers: [
