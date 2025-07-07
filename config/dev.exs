@@ -25,7 +25,8 @@ config :ex_vite, ExViteWeb.Endpoint,
     web_console_logger: true,
     patterns: [
       ~r"priv/gettext/.*(po)$",
-      ~r"lib/(ex_vite|ex_vite_web)/.*\.(ex|heex)$"
+      ~r"lib/ex_vite_web/(controllers|live|components|channels)/.*(ex|heex)$",
+      ~r"lib/ex_vite/.*(ex)$"
     ]
   ],
   watchers: [
