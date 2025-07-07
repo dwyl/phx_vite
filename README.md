@@ -9,7 +9,11 @@ A mix task:
 mix assets.install --dep lightweigh-charts --dev-dep prettier
 ```
 
-Missing __app.css__.
+Missing:
+1) __app.css__
+2) warning to check `static_paths/0`
+3) warning put all static assets in __/assets/{js,css,seo,images,...}__
+4) warning to use `Vite.path/1`
 
 
  __How?__ The documentation: <https://vite.dev/guide/backend-integration.html>
