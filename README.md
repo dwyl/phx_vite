@@ -116,7 +116,8 @@ config :my_app, MyAppWeb.Endpoint,
   live_reload: [
     web_console_logger: true,
     patterns: [
-      ~r"lib/(my_app|my_app_web)/.*\.(ex|heex)$"
+      ~r"lib/ex_vite_web/(controllers|live|components|channels)/.*(ex|heex)$",
+      ~r"lib/ex_vite/.*(ex)$"
     ]
   ],
   watchers: [
@@ -134,7 +135,7 @@ config :my_app, MyAppWeb.Endpoint,
 
 ## Root layout
 
-Pass the assign `@env` in the LiveView (or controller):
+Pass the assign `@env` in the LiveView (or controller) or use `Application.get_env(:ex_streams, :env)`
 
 ```elixir
 |> assign(:env, Application.fetch_env!(:my_app, :env))
@@ -147,13 +148,13 @@ Add the following to "root.html.heex":
 # root.html.heex
 
 <link
- :if={@env === :prod}
+ :if={pplication.get_env(:ex_vite, :env) === :prod}
  rel="stylesheet"
  href={Vite.path("css/app.css")}
 />
 
 <script 
-  :if={@env === :dev}
+  :if={pplication.get_env(:ex_vite, :env) === :dev}
   type="module"
   src="http://localhost:5173/@vite/client"
 >
@@ -193,7 +194,7 @@ const buildOps = (mode) => ({
   outDir: staticDir,
   cssMinify: mode === 'production' && "lightningcss", // Use lightningcss for CSS minification
   rollupOptions: {
-    input: mode == "production" ? getEntryPoints() : ["js/app.js"],
+    input: mode == "production" ? getEntryPoints() : ["./js/app.js"],
     output: mode === "production" && {
       assetFileNames: "assets/[name]-[hash][extname]",
       chunkFileNames: "assets/[name]-[hash].js",
@@ -239,6 +240,7 @@ The __vite.config.js__ module will export:
 export default defineConfig = ({command, mode}) => {
   if (command == 'serve') {
     process.stdin.on('close', () => process.exit(0));
+    copyStaticAssetsDev();
     process.stdin.resume();
   }
 
@@ -428,65 +430,56 @@ This is needed to resolve the file path in dev or in prod mode.
 ```elixir
 # lib/my_app_web/vite.ex
 
-if Application.compile_env!(:my_app, :env) == :dev do
-  defmodule Vite do
-    @moduledoc """
-    A helper module to manage Vite file discovery.
+defmodule Vite do
+  @moduledoc """
+  Helper for Vite asset paths in development and production.
+  """
 
-    It appends "http://localhost:5173" in DEV mode.
-
-    It finds the fingerprinted name in PROD mode from the .vite/manifest.json file that Vite generates.
-    """
-
-    def path(asset) do
-      "http://localhost:5173/#{asset}"
+  def path(asset) do
+    case Application.get_env(:ex_streams, :env) do
+      :dev -> "http://localhost:5173/" <> asset
+      _ -> get_production_path(asset)
     end
   end
-else
-  defmodule Vite do
-    # Ensure the manifest is loaded at compile time in production
-    def path(asset) do
-      app_name = :my_app
-                  ^^^
-      manifest = get_manifest(app_name)
 
-      case Path.extname(asset) do
-        ".css" ->
-          get_main_css_in(manifest)
+  defp get_production_path(asset) do
+    manifest = get_manifest()
 
-        _ ->
-          get_name_in(manifest, asset)
-      end
+    case Path.extname(asset) do
+      ".css" -> get_main_css_in(manifest)
+      _ -> get_asset_path(manifest, asset)
     end
+  end
 
-    defp get_manifest(app_name) do
-      manifest_path = Path.join(:code.priv_dir(app_name), "static/.vite/manifest.json")
+  defp get_manifest do
+    manifest_path = Path.join(:code.priv_dir(:ex_streams), "static/.vite/manifest.json")
 
-      with {:ok, content} <- File.read(manifest_path),
-           {:ok, decoded} <- Jason.decode(content) do
-        decoded
-      else
-        _ -> raise "Could not read or decode Vite manifest at #{manifest_path}"
-      end
+    with {:ok, content} <- File.read(manifest_path),
+        {:ok, decoded} <- Jason.decode(content) do
+      decoded
+    else
+      _ -> raise "Could not read Vite manifest at #{manifest_path}"
     end
+  end
 
-    defp get_main_css_in(manifest) do
-      manifest
-      |> Enum.flat_map(fn {_key, entry} ->
-        Map.get(entry, "css", [])
-      end)
-      |> Enum.filter(fn file -> String.contains?(file, "app") end)
-      |> List.first()
+  defp get_main_css_in(manifest) do
+    manifest
+    |> Enum.flat_map(fn {_key, entry} -> Map.get(entry, "css", []) end)
+    |> Enum.find(&String.contains?(&1, "app"))
+    |> case do
+      nil -> raise "Main CSS file not found in manifest"
+      file -> "/#{file}"
     end
+  end
 
-    defp get_name_in(manifest, asset) do
-      case manifest[asset] do
-        %{"file" => file} -> "/#{file}"
-        _ -> raise "Asset #{asset} not found in manifest"
-      end
+  defp get_asset_path(manifest, asset) do
+    case manifest[asset] do
+      %{"file" => file} -> "/#{file}"
+      _ -> raise "Asset #{asset} not found in manifest"
     end
   end
 end
+
 ```
 
 ## Vite.config.js
@@ -544,10 +537,9 @@ const getEntryPoints = () => {
 const buildOps = (mode) => ({
   target: ["esnext"],
   outDir: staticDir,
-  cssMinify: mode == 'production' && 'lightningcss', // already shipped by Tailwind v4?
   rollupOptions: {
     input:
-      mode == "production" ? getEntryPoints() : ["js/app.js"],
+      mode == "production" ? getEntryPoints() : ["./js/app.js"],
     // hash only in production mode
     output: mode === "production" && {
       assetFileNames: "assets/[name]-[hash][extname]",
