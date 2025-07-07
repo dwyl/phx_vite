@@ -28,7 +28,7 @@ The install does:
   
 and you should use `Vite.path("path-to-my-static-file")`, which works in DEV and PROD mode.
 
-In DEV mode, you should see two WebSocket:
+In DEV mode, you should see (at least) two WebSocket:
 
 ```
 ws://localhost:4000/phoenix/live_reload/socket/websocket?vsn=2.0.0
