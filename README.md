@@ -15,8 +15,20 @@ Missing:
 3) warning put all static assets in __/assets/{js,css,seo,images,...}__
 4) warning to use `Vite.path/1`
 
+The install does:
 
-In DEV mode, you should see:
+- setup pnpm-workspace.yaml
+- setup package.json and the dev dependencies
+- install the client packages
+- creates the Vite.ex helper
+- creates a config :env giving config_env()
+- injects the Vite watcher in dev.exs,
+- creates a new root.html.heex with config env dependencies
+- creates vite.config.js
+  
+and you should use `Vite.path("path-to-my-static-file")`, which works in DEV and PROD mode.
+
+In DEV mode, you should see two WebSocket:
 
 ```
 ws://localhost:4000/phoenix/live_reload/socket/websocket?vsn=2.0.0
