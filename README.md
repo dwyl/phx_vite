@@ -6,7 +6,7 @@ An example of a configuration to use `Vite` with `Phoenix LiveView`.
 A mix task:
 
 ```
-mix assets.isntall --dep lightweigh-charts --dev-dep prettier
+mix assets.install --dep lightweigh-charts --dev-dep prettier
 ```
 
 Missing __app.css__.
