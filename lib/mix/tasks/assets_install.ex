@@ -1,4 +1,4 @@
-defmodule Mix.Tasks.Assets.Install do
+defmodule Mix.Tasks.Vite.Install do
   use Mix.Task
   import Mix.Generator
 
