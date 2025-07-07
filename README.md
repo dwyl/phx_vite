@@ -16,6 +16,20 @@ Missing:
 4) warning to use `Vite.path/1`
 
 
+In DEV mode, you should see:
+
+```
+ws://localhost:4000/phoenix/live_reload/socket/websocket?vsn=2.0.0
+ws://localhost:5173/?token=yFGCVgkhJxQg
+```
+
+and
+
+```
+app.css -> http://localhost:5173/css/app.css
+app.js  -> http://localhost:5173/js/app.js
+```
+
  __How?__ The documentation: <https://vite.dev/guide/backend-integration.html>
 
 
