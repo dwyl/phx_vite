@@ -36,7 +36,7 @@ const buildOps = (mode) => ({
   // Specify the directory to nest generated assets under (relative to build.outDir
   outDir: staticDir,
   rollupOptions: {
-    input: mode === "production" ? getEntryPoints() : ["js/app.js"],
+    input: mode === "production" ? getEntryPoints() : ["./js/app.js"],
     output: mode === "production" && {
       assetFileNames: "assets/[name]-[hash][extname]",
       chunkFileNames: "assets/[name]-[hash].js",
