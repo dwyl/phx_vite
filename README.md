@@ -43,6 +43,9 @@ and you should use `Vite.path("path-to-my-static-file")`, which works in DEV and
 __Why?__ `Vite`does not bundle the code in development which means the dev server is fast to start, and your changes will be updated instantly.
 You can easily bring in plugins such as VitePWA with Workbox, or ZSTD compression, client-side SVG integration, React, Svelte, Solid... and [more](https://github.com/vitejs/awesome-vite#plugins).
 
+Catching the Google trend?!
+
+![Screenshot 2025-07-08 at 17 46 42](https://github.com/user-attachments/assets/812e72bb-f0f7-4de1-8b9c-1cfe727bfdc7)
 
 __What?__ In DEV mode, you will be running a `Vite` dev server on port 5173 and `Phoenix` on port 4000.
 
