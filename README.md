@@ -6,17 +6,17 @@ An example of a configuration to use `Vite` with `Phoenix LiveView`.
 Start with:
 
 ```
-mix phdx.new my_app --no-assets
+mix hdx.new my_app --no-assets
 ```
 
-Sue the mix task:
+Use the mix task to install `Vite` with `tailwind` by default, although you can bring in what you want:
 
 ```
 mix vite.install --dep @popperjs/core --dep bootstrap --dev-dep sass
 ```
 
 Missing:
-1) __app.css__
+1) __app.css__: do what you want!
 2) warning to check `static_paths/0`
 3) warning put all static assets in __/assets/{js,css,seo,images,...}__
 4) warning to use `Vite.path/1`
