@@ -16,6 +16,7 @@ mix vite.install --dep @popperjs/core --dep bootstrap --dev-dep sass
 ```
 
 The output warns:
+
 0) What has been installed
 1) __app.css__: do what you want!
 2) warning to check `static_paths/0`
