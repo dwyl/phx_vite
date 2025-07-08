@@ -6,7 +6,7 @@ An example of a configuration to use `Vite` with `Phoenix LiveView`.
 A mix task:
 
 ```
-mix vite.install --dep lightweigh-charts --dev-dep prettier
+mix vite.install --dep @popperjs/core --dep bootstrap --dev-dep sass
 ```
 
 Missing:
