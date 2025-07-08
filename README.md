@@ -6,13 +6,13 @@ An example of a configuration to use `Vite` with `Phoenix LiveView`.
 Start with:
 
 ```
-mix hdx.new my_app --no-assets
+mix phx.new my_app --no-assets
 ```
 
-Use the mix task to install `Vite` with `tailwind` by default, although you can bring in what you want:
+Use the mix task to install `Vite` with `tailwind` by default, although you can bring in what you want with the flags `dep` or `dev-dep`:
 
 ```
-mix vite.install --dep lightweight-charts --dep bootstrap --dev-dep tailwind-debug-mode
+mix vite.install --dep bootstrap
 ```
 
 The output is:
