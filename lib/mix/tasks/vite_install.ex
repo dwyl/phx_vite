@@ -86,7 +86,7 @@ defmodule Mix.Tasks.Vite.Install do
     Mix.shell().info("   • Set up app.css in the assets/css/ directory")
     Mix.shell().info("   • Run 'mix phx.server' to start your Phoenix server")
     Mix.shell().info("   • Vite dev server will start automatically on http://localhost:5173")
-    Mix.shell().info("   • Edit assets in the assets/ directory with live reload support")
+    Mix.shell().info("   • Use 'Vite.path/1' to define the source of your assets")
   end
 
   defp setup_pnpm_workspace(extra_deps) do
