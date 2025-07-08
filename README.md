@@ -64,7 +64,7 @@ Assets installation completed!
    • Vite dev server will start automatically on http://localhost:5173
 ```
 
-In particular, it warns you should use `Vite.path("path-to-my-static-file")`, which works in DEV and PROD mode.
+❗️ In particular, it warns you should use `Vite.path("path-to-my-static-file")`, which works in DEV and PROD mode.
 
 
  __How?__ The documentation: <https://vite.dev/guide/backend-integration.html>
