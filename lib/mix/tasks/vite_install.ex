@@ -65,6 +65,26 @@ defmodule Mix.Tasks.Vite.Install do
     append_to_file("config/dev.exs", vite_watcher_template(context()))
 
     Mix.shell().info("Assets installation completed!")
+    Mix.shell().info("")
+    Mix.shell().info("✅ What was added to your project:")
+    Mix.shell().info("   • Environment config in config/config.exs")
+    Mix.shell().info("   • Vite watcher configuration in config/dev.exs")
+    Mix.shell().info("   • Vite configuration file at assets/vite.config.js")
+
+    Mix.shell().info(
+      "   • Updated root layout template at lib/#{app_name}_web/components/layouts/root.html.heex"
+    )
+
+    Mix.shell().info("   • Vite helper module at lib/#{app_name}_web/vite.ex")
+    Mix.shell().info("   • pnpm workspace configuration at pnpm-workspace.yaml")
+    Mix.shell().info("   • Package.json with Phoenix workspace dependencies")
+    Mix.shell().info("   • Client libraries: #{Enum.join(extra_deps, ", ")}")
+    Mix.shell().info("   • Dev dependencies: Tailwind CSS, Vite, DaisyUI, and build tools")
+    Mix.shell().info("")
+    Mix.shell().info("🚀 Next steps:")
+    Mix.shell().info("   • Run 'mix phx.server' to start your Phoenix server")
+    Mix.shell().info("   • Vite dev server will start automatically on http://localhost:5173")
+    Mix.shell().info("   • Edit assets in the assets/ directory with live reload support")
   end
 
   defp setup_pnpm_workspace(extra_deps) do
