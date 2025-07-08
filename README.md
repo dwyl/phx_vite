@@ -61,9 +61,12 @@ app.js  -> http://localhost:5173/js/app.js
 ```
 
 In DEV mode, `Vite` serves your asssets from __/assets/{js,images,...}__.
+
 Your non-fingerprinted assets, ie __/assets/seo/robots.txt, /assets/seo/sitemap.xml, /assets/icons/favicon.ico...__ and copied into __/priv/static/{icons}__.
 
 In PROD mode, `Vite` bundles the code, with tree-shaking... into the folder __/priv/static/assets/__.
+
+We will use the helper `Vite.path/1` for this.
 
 ## Setup
 
