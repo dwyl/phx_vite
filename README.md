@@ -40,7 +40,9 @@ and you should use `Vite.path("path-to-my-static-file")`, which works in DEV and
  __How?__ The documentation: <https://vite.dev/guide/backend-integration.html>
 
 
-__Why?__ `Vite`does not bundle the code in development which means the dev server is fast to start, and your changes will be updated instantly. You can easily bring in plugins such as VitePWA with Workbox, or ZSTD compression, client-side SVG integration, React, Svelte, Solid... and [more](https://github.com/vitejs/awesome-vite#plugins). In production, `Vite` bundles the code, with tree-shaking... into teh folder __/priv/static/assets/__.
+__Why?__ `Vite`does not bundle the code in development which means the dev server is fast to start, and your changes will be updated instantly.
+You can easily bring in plugins such as VitePWA with Workbox, or ZSTD compression, client-side SVG integration, React, Svelte, Solid... and [more](https://github.com/vitejs/awesome-vite#plugins).
+
 
 __What?__ In DEV mode, you will be running a `Vite` dev server on port 5173 and `Phoenix` on port 4000.
 
@@ -58,6 +60,10 @@ app.css -> http://localhost:5173/css/app.css
 app.js  -> http://localhost:5173/js/app.js
 ```
 
+In DEV mode, `Vite` serves your asssets from __/assets/{js,images,...}__.
+Your non-fingerprinted assets, ie __/assets/seo/robots.txt, /assets/seo/sitemap.xml, /assets/icons/favicon.ico...__ and copied into __/priv/static/{icons}__.
+
+In PROD mode, `Vite` bundles the code, with tree-shaking... into the folder __/priv/static/assets/__.
 
 ## Setup
 
