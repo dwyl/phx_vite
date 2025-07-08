@@ -2,17 +2,29 @@ defmodule Mix.Tasks.Vite.Install do
   use Mix.Task
   import Mix.Generator
 
-  def context() do
-    # Get application name from mix.exs
-    app_name = Mix.Project.config()[:app]
-    app_module = Mix.Project.config()[:app] |> Atom.to_string() |> Macro.camelize()
+  @moduledoc """
+  Installs and configures Vite for Phoenix LiveView projects.
 
-    %{
-      app_name: app_name,
-      app_module: app_module,
-      web_module: "#{app_module}Web"
-    }
-  end
+  Sets up a complete Vite-based asset pipeline with Tailwind CSS, pnpm workspace,
+  and generates helper modules for development and production asset handling.
+
+  ## Usage
+
+      $ mix vite.install
+      $ mix vite.install --dep alpinejs --dev-dep postcss
+
+  ## Options
+
+    * `--dep` - Add a regular dependency (can be used multiple times)
+    * `--dev-dep` - Add a development dependency (can be used multiple times)
+
+  ## Examples
+
+      $ mix vite.install --dep react --dep lodash
+      $ mix vite.install --dev-dep sass --dev-dep autoprefixer
+
+  """
+  @shortdoc "Installs and configures Vite for Phoenix projects"
 
   @impl Mix.Task
   def run(args) do
@@ -26,8 +38,10 @@ defmodule Mix.Tasks.Vite.Install do
     end
 
     # Parse command line arguments. :keep allows multiple values
-    # (e.g., mix assets.install --dep topbar --dep react)
-    {opts, _, _} = OptionParser.parse(args, switches: [dep: :keep, dev_dep: :keep])
+    # Note: Use hyphens in CLI arguments (--dev-dep), not underscores
+    # (e.g., mix vite.install --dep topbar --dev-dep @types/node)
+    {opts, _, _} =
+      OptionParser.parse(args, switches: [dep: :keep, dev_dep: :keep], aliases: [d: :dep])
 
     extra_deps = Keyword.get_values(opts, :dep)
     extra_dev_deps = Keyword.get_values(opts, :dev_dep)
@@ -45,9 +59,8 @@ defmodule Mix.Tasks.Vite.Install do
     # Add topbar by default unless --no-topbar is specified
     extra_deps = extra_deps ++ ["topbar"]
 
-    # Setup pnpm workspace and dependencies
-    setup_pnpm_workspace(extra_deps)
-    setup_dev_dependencies(extra_dev_deps)
+    # Setup pnpm workspace and install all dependencies
+    setup_pnpm_workspace(extra_deps, extra_dev_deps)
     setup_install_deps()
 
     # Add config first before generating files that depend on it
@@ -82,14 +95,24 @@ defmodule Mix.Tasks.Vite.Install do
     Mix.shell().info("   • Dev dependencies: Tailwind CSS, Vite, DaisyUI, and build tools")
     Mix.shell().info("")
     Mix.shell().info("🚀 Next steps:")
-    Mix.shell().info("   • Check static_paths/0 which defines the static assets served by Phoenix")
-    Mix.shell().info("   • Set up app.css in the assets/css/ directory")
     Mix.shell().info("   • Run 'mix phx.server' to start your Phoenix server")
     Mix.shell().info("   • Vite dev server will start automatically on http://localhost:5173")
     Mix.shell().info("   • Use 'Vite.path/1' to define the source of your assets")
   end
 
-  defp setup_pnpm_workspace(extra_deps) do
+  defp context() do
+    # Get application name from mix.exs
+    app_name = Mix.Project.config()[:app]
+    app_module = Mix.Project.config()[:app] |> Atom.to_string() |> Macro.camelize()
+
+    %{
+      app_name: app_name,
+      app_module: app_module,
+      web_module: "#{app_module}Web"
+    }
+  end
+
+  defp setup_pnpm_workspace(extra_deps, extra_dev_deps) do
     {v, _} = System.cmd("pnpm", ["-v"])
     version = String.trim(v)
 
@@ -107,53 +130,64 @@ defmodule Mix.Tasks.Vite.Install do
       - '@tailwindcss/oxide'
     """
 
-    package_json_content =
-      """
-      {
-        "type": "module",
-        "dependencies": {
-          "phoenix": "workspace:*",
-          "phoenix_html": "workspace:*",
-          "phoenix_live_view": "workspace:*"
-        },
-        "packageManager": "pnpm@#{version}"
-      }
-      """
+    # Build dependencies object for package.json
+    base_deps = %{
+      "phoenix" => "workspace:*",
+      "phoenix_html" => "workspace:*",
+      "phoenix_live_view" => "workspace:*"
+    }
+
+    # Add extra dependencies
+    deps_map =
+      Enum.reduce(extra_deps, base_deps, fn dep, acc ->
+        Map.put(acc, dep, "latest")
+      end)
+
+    # Build dev dependencies
+    base_dev_dependencies = [
+      "@tailwindcss/oxide",
+      "@tailwindcss/vite",
+      "@tailwindcss/forms",
+      "@tailwindcss/typography",
+      "daisyui",
+      "fast-glob",
+      "tailwindcss",
+      "vite",
+      "vite-plugin-static-copy"
+    ]
+
+    all_dev_deps = base_dev_dependencies ++ extra_dev_deps
+
+    dev_deps_map =
+      Enum.reduce(all_dev_deps, %{}, fn dep, acc ->
+        Map.put(acc, dep, "latest")
+      end)
+
+    # Create package.json with all dependencies
+    package_json = %{
+      "type" => "module",
+      "dependencies" => deps_map,
+      "devDependencies" => dev_deps_map,
+      "packageManager" => "pnpm@#{version}"
+    }
 
     File.write!("./pnpm-workspace.yaml", workspace_content)
-    File.write!("./assets/package.json", package_json_content)
+    File.write!("./assets/package.json", Jason.encode!(package_json, pretty: true))
 
     {:ok, _} = File.rm_rf("./assets/node_modules")
     {:ok, _} = File.rm_rf("./node_modules")
 
-    # Install dependencies if any were specified
-    {_output, 0} = System.cmd("pnpm", ["add", "--prefix", "assets"] ++ extra_deps)
-    Mix.shell().info("Dependencies installed: #{length(extra_deps)} packages")
-  end
-
-  defp setup_dev_dependencies(extra_dev_deps) do
-    base_dev_dependencies = ~w(
-      @tailwindcss/oxide
-      @tailwindcss/vite
-      @tailwindcss/forms
-      @tailwindcss/typography
-      daisyui
-      fast-glob
-      tailwindcss
-      vite
-      vite-plugin-static-copy
-    )
-
-    dev_dependencies = base_dev_dependencies ++ extra_dev_deps
-
-    {_output, 0} = System.cmd("pnpm", ["add", "--prefix", "assets", "-D"] ++ dev_dependencies)
-    Mix.shell().info("Dev dependencies installed: #{length(dev_dependencies)} packages")
+    Mix.shell().info("Dependencies to install: #{length(extra_deps)} packages")
+    Mix.shell().info("Dev dependencies to install: #{length(all_dev_deps)} packages")
   end
 
   defp setup_install_deps() do
+    Mix.shell().info("Installing all dependencies with pnpm...")
+
     case System.cmd("pnpm", ["install"]) do
-      {_output, 0} ->
+      {output, 0} ->
         Mix.shell().info("Assets installed successfully")
+        Mix.shell().info(output)
 
       {error_output, _exit_code} ->
         Mix.shell().error("Failed to install assets: #{error_output}")
@@ -461,4 +495,3 @@ defmodule Mix.Tasks.Vite.Install do
     end
   end
 end
-
