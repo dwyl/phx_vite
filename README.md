@@ -82,7 +82,7 @@ For example, you have non-fingerprinted assets such as "robots.txt" and "sitemap
 All your icons, eg favicons, should be placed in the folder "assets/icons" and will be copied in "priv/static/icons", and served by Phoenix.
 You can safely do:
 
-```
+```elixir
 # root.html.heex
 <link rel="icon" href="icons/favicon.ico" type="image/png" sizes="48x48" />
 ```
