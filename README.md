@@ -15,26 +15,56 @@ Use the mix task to install `Vite` with `tailwind` by default, although you can 
 mix vite.install --dep @popperjs/core --dep bootstrap --dev-dep sass
 ```
 
-The output warns:
+The output is:
 
-0) What has been installed
-1) __app.css__: do what you want!
-2) warning to check `static_paths/0`
-3) warning put all static assets in __/assets/{js,css,seo,images,...}__
-4) warning to use `Vite.path/1`
+```
+Assets setup started for ex_streams (ExStreams)...
+Extra dependencies to install: lightweight-charts
+Extra dev dependencies to install: tailwind-debug-mode
+Dependencies to install: 2 packages
+Dev dependencies to install: 10 packages
+Installing all dependencies with pnpm...
+Assets installed successfully
+Scope: all 4 workspace projects
+Lockfile is up to date, resolution step is skipped
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Packages: +614
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Progress: resolved 614, reused 614, downloaded 0, added 334
+Progress: resolved 614, reused 614, downloaded 0, added 614, done
+Done in 1.9s using pnpm v10.12.4
 
-The install does:
+Created assets/icons/ directory with favicon.ico
+Created assets/seo/ directory with robots.txt and sitemap.xml
+Updated lib/ex_streams_web.ex to include 'icons' in static_paths
+config/config.exs already contains the configuration, skipping...
+* creating lib/ex_streams_web/vite.ex
+* creating lib/ex_streams_web/components/layouts/root.html.heex
+* creating assets/vite.config.js
+config/dev.exs already contains the configuration, skipping...
+Assets installation completed!
 
-- setup pnpm-workspace.yaml
-- setup package.json and the dev dependencies
-- install the client packages
-- creates the Vite.ex helper
-- creates a config :env giving config_env()
-- injects the Vite watcher in dev.exs,
-- creates a new root.html.heex with config env dependencies
-- creates vite.config.js
-  
-and you should use `Vite.path("path-to-my-static-file")`, which works in DEV and PROD mode.
+✅ What was added to your project:
+   • Environment config in config/config.exs
+   • Vite watcher configuration in config/dev.exs
+   • Vite configuration file at assets/vite.config.js
+   • Updated root layout template at lib/ex_streams_web/components/layouts/root.html.heex
+   • Vite helper module at lib/ex_streams_web/vite.ex
+   • pnpm workspace configuration at pnpm-workspace.yaml
+   • Package.json with Phoenix workspace dependencies
+   • Asset directories: assets/icons/ and assets/seo/ with placeholder files
+   • Updated static_paths in lib/ex_streams_web.ex to include 'icons'
+   • Client libraries: lightweight-charts, topbar
+   • Dev dependencies: Tailwind CSS, Vite, DaisyUI, and build tools
+
+🚀 Next steps:
+   • Check 'static_paths/0' in your endpoint config
+   • Use 'Vite.path/1' in your code to define the source of your assets
+   • Run 'mix phx.server' to start your Phoenix server
+   • Vite dev server will start automatically on http://localhost:5173
+```
+
+In particular, it warns you should use `Vite.path("path-to-my-static-file")`, which works in DEV and PROD mode.
 
 
  __How?__ The documentation: <https://vite.dev/guide/backend-integration.html>
@@ -71,7 +101,10 @@ In PROD mode, `Vite` bundles the code, with tree-shaking... into the folder __/p
 
 We will use the helper `Vite.path/1` for this.
 
-## Setup
+
+Check: <https://github.com/dwyl/phx_vite/blob/main/lib/mix/tasks/vite_install.ex>
+
+## Manual Setup
 
 - in "/", create `pnpm-workspace.yaml` (use "yaml", not "yml")
 - go to "/assets", run `pnpm init` and set `"type": "module"`
@@ -79,9 +112,6 @@ We will use the helper `Vite.path/1` for this.
 - go to "/" and run `pnpm install`.
 - change the __app_name__ in "Vite.ex" and the folder name in "assets/css/app.css"
 
-### Mix Vite install
-
-check: <https://github.com/dwyl/phx_vite/blob/main/lib/mix/tasks/vite_install.ex>
 
 ### Static assets
 
