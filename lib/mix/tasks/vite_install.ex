@@ -82,6 +82,8 @@ defmodule Mix.Tasks.Vite.Install do
     Mix.shell().info("   • Dev dependencies: Tailwind CSS, Vite, DaisyUI, and build tools")
     Mix.shell().info("")
     Mix.shell().info("🚀 Next steps:")
+    Mix.shell().info("   • Check static_paths/0 which defines the static assets served by Phoenix")
+    Mix.shell().info("   • Set up app.css in the assets/css/ directory")
     Mix.shell().info("   • Run 'mix phx.server' to start your Phoenix server")
     Mix.shell().info("   • Vite dev server will start automatically on http://localhost:5173")
     Mix.shell().info("   • Edit assets in the assets/ directory with live reload support")
