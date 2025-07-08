@@ -104,7 +104,9 @@ For example, set `src={Vite.path("js/app.js")}` so `Vite` will serve it at _http
 
 Another example; suppose you have a Phoenix.Component named _techs.ex_ where you display some images, thus fingerprinted assets:
 
-`<img src={Vite.path("images/my.svg"} alt="an-svg" loading="lazy" />`
+```elixir
+<img src={Vite.path("images/my.svg"} alt="an-svg" loading="lazy" />
+```
 
 These images are placed in the folder "assets/images" and are fingerprinted.
 In DEV mode, `Vite` will serve them as the `src` is now _http://localhost:5173/iamges/my.svg_.
