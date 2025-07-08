@@ -3,7 +3,13 @@
 
 An example of a configuration to use `Vite` with `Phoenix LiveView`.
 
-A mix task:
+Start with:
+
+```
+mix phdx.new my_app --no-assets
+```
+
+Sue the mix task:
 
 ```
 mix vite.install --dep @popperjs/core --dep bootstrap --dev-dep sass
