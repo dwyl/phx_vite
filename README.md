@@ -12,7 +12,7 @@ mix hdx.new my_app --no-assets
 Use the mix task to install `Vite` with `tailwind` by default, although you can bring in what you want:
 
 ```
-mix vite.install --dep @popperjs/core --dep bootstrap --dev-dep sass
+mix vite.install --dep lightweight-charts --dep bootstrap --dev-dep tailwind-debug-mode
 ```
 
 The output is:
