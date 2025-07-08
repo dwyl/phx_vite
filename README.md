@@ -15,7 +15,8 @@ Use the mix task to install `Vite` with `tailwind` by default, although you can 
 mix vite.install --dep @popperjs/core --dep bootstrap --dev-dep sass
 ```
 
-Missing:
+The output warns:
+0) What has been installed
 1) __app.css__: do what you want!
 2) warning to check `static_paths/0`
 3) warning put all static assets in __/assets/{js,css,seo,images,...}__
@@ -65,6 +66,9 @@ app.js  -> http://localhost:5173/js/app.js
 - go to "/" and run `pnpm install`.
 - change the __app_name__ in "Vite.ex" and the folder name in "assets/css/app.css"
 
+### Mix Vite install
+
+check: <https://github.com/dwyl/phx_vite/blob/main/lib/mix/tasks/vite_install.ex>
 
 ### Static assets
 
