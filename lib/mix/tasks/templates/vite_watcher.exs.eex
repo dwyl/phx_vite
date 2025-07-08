@@ -1,0 +1,12 @@
+config :<%= @app_name %>, <%= @web_module %>.Endpoint,
+  watchers: [
+    pnpm: [
+      "vite",
+      "serve",
+      "--mode",
+      "development",
+      "--config",
+      "vite.config.js",
+      cd: Path.expand("../assets", __DIR__)
+    ]
+  ]
