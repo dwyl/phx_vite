@@ -40,7 +40,7 @@ and you should use `Vite.path("path-to-my-static-file")`, which works in DEV and
  __How?__ The documentation: <https://vite.dev/guide/backend-integration.html>
 
 
-__Why?__ `Vite`does not bundle the code in development which means the dev server is fast to start, and your changes will be updated instantly. You can easily bring in plugins such as VitePWA with Workbox, or ZSTD compression, client-side SVG integration, React, Svelte, Solid... and [more](https://github.com/vitejs/awesome-vite#plugins). In production, `Vite` bundles the code, with tree-shaking...
+__Why?__ `Vite`does not bundle the code in development which means the dev server is fast to start, and your changes will be updated instantly. You can easily bring in plugins such as VitePWA with Workbox, or ZSTD compression, client-side SVG integration, React, Svelte, Solid... and [more](https://github.com/vitejs/awesome-vite#plugins). In production, `Vite` bundles the code, with tree-shaking... into teh folder __/priv/static/assets/__.
 
 __What?__ In DEV mode, you will be running a `Vite` dev server on port 5173 and `Phoenix` on port 4000.
 
