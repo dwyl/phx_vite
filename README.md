@@ -101,6 +101,12 @@ In PROD mode, `Vite` bundles the code, with tree-shaking... into the folder __/p
 
 We will use the helper `Vite.path/1` for this.
 
+In your Dockerfile, use:
+
+```
+pnpm vite build --mode production --config vite.config.js
+```
+
 
 Check: <https://github.com/dwyl/phx_vite/blob/main/lib/mix/tasks/vite_install.ex>
 
