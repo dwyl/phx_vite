@@ -5,19 +5,22 @@ An example of a configuration to use `Vite` with `Phoenix LiveView`.
 
 Start with:
 
-```
+```elixir
 mix phx.new my_app --no-assets
 ```
 
-Use the mix task to install `Vite` with `tailwind` by default, although you can bring in what you want with the flags `dep` or `dev-dep`:
+Use the mix task to install `Vite` with `tailwind` by default, 
 
-```
+```elixir
 mix vite.install --dep bootstrap
 ```
 
+>[!NOTE]
+You can bring in what you want with the option flags `dep` or `dev-dep`:
+
 The output is:
 
-```
+```elixir
 Assets setup started for ex_streams (ExStreams)...
 Extra dependencies to install: lightweight-charts
 Extra dev dependencies to install: tailwind-debug-mode
@@ -64,7 +67,8 @@ Assets installation completed!
    • Vite dev server will start automatically on http://localhost:5173
 ```
 
-❗️ In particular, it warns you should use `Vite.path("path-to-my-static-file")`, which works in DEV and PROD mode.
+> [!IMPORTANT] 
+It warns you should use `Vite.path("path-to-my-static-file")`, which works in DEV and PROD mode.
 
 
  __How?__ The documentation: <https://vite.dev/guide/backend-integration.html>
@@ -79,6 +83,7 @@ Catching the Google trend?!
 
 __What?__ In DEV mode, you will be running a `Vite` dev server on port 5173 and `Phoenix` on port 4000.
 
+>[!NOTE]
 In DEV mode, you should see (at least) two WebSocket:
 
 ```
@@ -86,7 +91,7 @@ ws://localhost:4000/phoenix/live_reload/socket/websocket?vsn=2.0.0
 ws://localhost:5173/?token=yFGCVgkhJxQg
 ```
 
-and
+and the network inspection shows:
 
 ```
 app.css -> http://localhost:5173/css/app.css
@@ -97,6 +102,7 @@ In DEV mode, `Vite` serves your asssets from __/assets/{js,images,...}__.
 
 Your non-fingerprinted assets, ie __/assets/seo/robots.txt, /assets/seo/sitemap.xml, /assets/icons/favicon.ico...__ and copied into __/priv/static/{icons}__.
 
+>[!NOTE]
 In PROD mode, `Vite` bundles the code, with tree-shaking... into the folder __/priv/static/assets/__.
 
 We will use the helper `Vite.path/1` for this.
@@ -127,6 +133,7 @@ All your static assets should be organised in the "/assets" folder with the stru
 /assest/{js,css,seo, fonts, icons, images, wasm,...}
 ```
 
+>[!IMPORTANT]
 Do not add anything in the "/priv/static" folder as it will be pruned but instead place them in the "/assets" folder.
 
 In DEV mode, the _vite.config.js_ settings will copy the non-fingerprinted files into "/priv/static".
@@ -150,7 +157,9 @@ def static_paths, do: ~w(
       sitemap.xml)
 ```
 
+>[!IMPORTANT]
 The other - fingerprinted - static assets should use the Elixir module `Vite.path/1`.
+
 In DEV mode, it will prepend _http://localhost:5173_ to the file name and these assets are located in the folder "/assets/[...]".
 
 For example, set `src={Vite.path("js/app.js")}` so `Vite` will serve it at _http://localhost:5173/js/app.js_.
