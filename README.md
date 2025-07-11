@@ -17,7 +17,7 @@ mix vite.install
 
 
 >[!NOTE]
-You may use the option `css` to isntall a copy of the `daisyui` and `heroicons` files as provided by `Phoenix 1.8` into the __/assets/vendor__ folder and set the __app.css__ file.
+You may use the option `css` to install a copy of the `daisyui` and `heroicons` files as provided by `Phoenix 1.8` into the __/assets/vendor__ folder and set the __app.css__ file.
 
 ```elixir
 mix vite.install --css heroicons --css daisyui
