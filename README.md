@@ -394,7 +394,6 @@ and populate your newly created package.json with your favourite client dependen
   "type": "module",
   "name": "assets",
   "dependencies": {
-    "fast-glob": "^3.3.3",
     "phoenix": "workspace:*",
     "phoenix_html": "workspace:*",
     "phoenix_live_view": "workspace:*",
