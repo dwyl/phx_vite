@@ -11,17 +11,17 @@ defmodule Mix.Tasks.Vite.Install do
   ## Usage
 
       $ mix vite.install
-      $ mix vite.install --dep alpinejs --dev-dep postcss
 
   ## Options
 
     * `--dep` - Add a regular dependency (can be used multiple times)
     * `--dev-dep` - Add a development dependency (can be used multiple times)
 
+    ⚠️ It is recommended to use directly `pnpm add -D my-dependency --prefix assets` instead as `pnpm` can output warnings that you might need to follow (eg for native modules).
+
   ## Examples
 
-      $ mix vite.install --dep react --dep lodash
-      $ mix vite.install --dev-dep sass --dev-dep autoprefixer
+      $ mix vite.install --dep solid-js --dep leaflet --dev-dep vite-plugin-solid
 
   """
   @shortdoc "Installs and configures Vite for Phoenix projects"
@@ -144,20 +144,27 @@ defmodule Mix.Tasks.Vite.Install do
       - '@tailwindcss/oxide'
     """
 
-    # Build dependencies object for package.json
-    base_deps = %{
-      "phoenix" => "workspace:*",
-      "phoenix_html" => "workspace:*",
-      "phoenix_live_view" => "workspace:*"
-    }
+    package_json =
+      %{
+        "name" => "assets",
+        "type" => "module",
+        "dependencies" => %{
+          "phoenix" => "workspace:*",
+          "phoenix_html" => "workspace:*",
+          "phoenix_live_view" => "workspace:*"
+        },
+        "devDependencies" => %{},
+        "packageManager" => "pnpm@#{version}"
+      }
+      |> Jason.encode!(pretty: true)
 
-    # Add extra dependencies
-    deps_map =
-      Enum.reduce(extra_deps, base_deps, fn dep, acc ->
-        Map.put(acc, dep, "latest")
-      end)
+    File.write!("./pnpm-workspace.yaml", workspace_content)
+    File.write!("./assets/package.json", package_json)
 
-    # Build dev dependencies
+    # Clean up existing node_modules to start fresh
+    {:ok, _} = File.rm_rf("./assets/node_modules")
+    {:ok, _} = File.rm_rf("./node_modules")
+
     base_dev_dependencies = [
       "@tailwindcss/oxide",
       "@tailwindcss/vite",
@@ -170,29 +177,32 @@ defmodule Mix.Tasks.Vite.Install do
       "vite-plugin-static-copy"
     ]
 
+    all_deps = extra_deps
     all_dev_deps = base_dev_dependencies ++ extra_dev_deps
 
-    dev_deps_map =
-      Enum.reduce(all_dev_deps, %{}, fn dep, acc ->
-        Map.put(acc, dep, "latest")
-      end)
+    case System.cmd(
+           "pnpm",
+           ["add"] ++ all_deps ++ ["--prefix"] ++ ["assets"]
+         ) do
+      {output, 0} ->
+        Mix.shell().info("Dependencies added successfully\n")
+        Mix.shell().info(output)
 
-    # Create package.json with all dependencies
-    package_json = %{
-      "type" => "module",
-      "dependencies" => deps_map,
-      "devDependencies" => dev_deps_map,
-      "packageManager" => "pnpm@#{version}"
-    }
+      {error_output, _exit_code} ->
+        Mix.shell().error("Failed to add dependencies: #{error_output}")
+    end
 
-    File.write!("./pnpm-workspace.yaml", workspace_content)
-    File.write!("./assets/package.json", Jason.encode!(package_json, pretty: true))
+    case System.cmd(
+           "pnpm",
+           ["add"] ++ ["-D"] ++ all_dev_deps ++ ["--prefix"] ++ ["assets"]
+         ) do
+      {output, 0} ->
+        Mix.shell().info("Dev Dependencies added successfully\n")
+        Mix.shell().info(output)
 
-    {:ok, _} = File.rm_rf("./assets/node_modules")
-    {:ok, _} = File.rm_rf("./node_modules")
-
-    Mix.shell().info("Dependencies to install: #{length(extra_deps)} packages")
-    Mix.shell().info("Dev dependencies to install: #{length(all_dev_deps)} packages")
+      {error_output, _exit_code} ->
+        Mix.shell().error("Failed to add dependencies: #{error_output}")
+    end
   end
 
   defp setup_install_deps() do
