@@ -27,29 +27,7 @@ The output is:
 
 ```elixir
 Assets setup started for ex_streams (ExStreams)...
-Extra dependencies to install: lightweight-charts
-Extra dev dependencies to install: tailwind-debug-mode
-Dependencies to install: 2 packages
-Dev dependencies to install: 10 packages
-Installing all dependencies with pnpm...
-Assets installed successfully
-Scope: all 4 workspace projects
-Lockfile is up to date, resolution step is skipped
-Progress: resolved 1, reused 0, downloaded 0, added 0
-Packages: +614
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-Progress: resolved 614, reused 614, downloaded 0, added 334
-Progress: resolved 614, reused 614, downloaded 0, added 614, done
-Done in 1.9s using pnpm v10.12.4
-
-Created assets/icons/ directory with favicon.ico
-Created assets/seo/ directory with robots.txt and sitemap.xml
-Updated lib/ex_streams_web.ex to include 'icons' in static_paths
-config/config.exs already contains the configuration, skipping...
-* creating lib/ex_streams_web/vite.ex
-* creating lib/ex_streams_web/components/layouts/root.html.heex
-* creating assets/vite.config.js
-config/dev.exs already contains the configuration, skipping...
+[...]
 Assets installation completed!
 
 ✅ What was added to your project:
