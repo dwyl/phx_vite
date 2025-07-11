@@ -375,10 +375,11 @@ packages:
   - deps/phoenix_html
   - deps/phoenix_live_view
 
+ignoreBuildDependencies:
+  - esbuild
+
 onlyBuiltDependencies:
   - '@tailwindcss/oxide'
-  - '@mongodb-js/zstd'
-  - esbuild
 ```
 
 In the "assets" folder, run:
