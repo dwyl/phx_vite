@@ -242,13 +242,13 @@ Add the following to "root.html.heex":
 # root.html.heex
 
 <link
- :if={pplication.get_env(:ex_vite, :env) === :prod}
+ :if={Application.get_env(:ex_vite, :env) === :prod}
  rel="stylesheet"
  href={Vite.path("css/app.css")}
 />
 
 <script 
-  :if={pplication.get_env(:ex_vite, :env) === :dev}
+  :if={Application.get_env(:ex_vite, :env) === :dev}
   type="module"
   src="http://localhost:5173/@vite/client"
 >
