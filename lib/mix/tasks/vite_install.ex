@@ -16,12 +16,13 @@ defmodule Mix.Tasks.Vite.Install do
 
     * `--dep` - Add a regular dependency (can be used multiple times)
     * `--dev-dep` - Add a development dependency (can be used multiple times)
+    * `--css` - Add CSS configuration files (can be used multiple times, options: heroicons, daisyui)
 
     ⚠️ It is recommended to use directly `pnpm add -D my-dependency --prefix assets` instead as `pnpm` can output warnings that you might need to follow (eg for native modules).
 
   ## Examples
 
-      $ mix vite.install --dep solid-js --dep leaflet --dev-dep vite-plugin-solid
+      $ mix vite.install --dep solid-js --dep leaflet --dev-dep vite-plugin-solid --css heroicons --css daisyui
 
   """
   @shortdoc "Installs and configures Vite for Phoenix projects"
@@ -45,12 +46,16 @@ defmodule Mix.Tasks.Vite.Install do
 
     extra_deps = Keyword.get_values(opts, :dep)
     extra_dev_deps = Keyword.get_values(opts, :dev_dep)
+    extra_css = Keyword.get_values(opts, :css)
 
     %{app_name: app_name, app_module: app_module} = context()
 
     Mix.shell().info("Assets setup started for #{app_name} (#{app_module})...")
-
     Mix.shell().info("Extra dependencies to install: #{Enum.join(extra_deps, ", ")}")
+
+    if extra_css != [] do
+      Mix.shell().info("CSS configurations to install: #{Enum.join(extra_css, ", ")}")
+    end
 
     if extra_dev_deps != [] do
       Mix.shell().info("Extra dev dependencies to install: #{Enum.join(extra_dev_deps, ", ")}")
@@ -65,6 +70,8 @@ defmodule Mix.Tasks.Vite.Install do
 
     # Create asset directories and placeholder files
     setup_asset_directories()
+    File.mkdir_p!("./assets/css")
+    File.mkdir_p!("./assets/vendor")
 
     # Update static_paths to include icons
     update_static_paths(app_name)
@@ -80,6 +87,13 @@ defmodule Mix.Tasks.Vite.Install do
     )
 
     create_file("assets/vite.config.js", vite_config_template())
+
+    if Enum.member?(extra_css, "heroicons"), do: create_file("assets/vendor/heroicons.js", heroicons_template())
+
+    if Enum.member?(extra_css, "daisyui") do
+      create_file("assets/vendor/daisyui.js", daisyui_template())
+      create_file("assets/vendor/daisyui_theme.js", daisyui_theme_template())
+    end
 
     append_to_file("config/dev.exs", vite_watcher_template(context()))
 
@@ -256,6 +270,23 @@ defmodule Mix.Tasks.Vite.Install do
 
   defp vite_config_template() do
     read_template("vite.config.js")
+  end
+
+  defp app_css_template(assigns) do
+    ("\n \n" <> read_template("app.css.eex"))
+    |> EEx.eval_string(assigns: assigns)
+  end
+
+  defp daisyui_template do
+    read_template("daisyui.js")
+  end
+
+  defp heroicons_template do
+    read_template("heroicons.js")
+  end
+
+  defp daisyui_theme_template do
+    read_template("daisyui_theme.js")
   end
 
   defp read_template(filename) do
