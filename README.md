@@ -16,7 +16,12 @@ mix vite.install --dep bootstrap
 ```
 
 >[!NOTE]
-You can bring in what you want with the option flags `dep` or `dev-dep`:
+You can bring in what you want with the option flags `dep` or `dev-dep`.
+
+>[!WARNING]
+It is recommend to add packages manually, with:
+ `pnpm add (-D) xxx --prefix assets`.
+Indeed, `pnpm` can output warnings which you might miss. For example, in case you are using native `Node.js` addons which need to be compiled, you need to pass them to the field `onlyBuiltDependencies`. 
 
 The output is:
 
@@ -381,6 +386,11 @@ packages:
   - deps/phoenix
   - deps/phoenix_html
   - deps/phoenix_live_view
+
+onlyBuiltDependencies:
+  - '@tailwindcss/oxide'
+  - '@mongodb-js/zstd'
+  - esbuild
 ```
 
 In the "assets" folder, run:
@@ -395,13 +405,16 @@ and populate your newly created package.json with your favourite client dependen
 /assets> pnpm add -D tailwindcss @tailwindcss/vite daisyui vite-plugin-static-copy fast-glob lightningcss
 ```
 
-▶️ Set "type": "module" and use "workspace":
+▶️ Set "type": "module"
+▶️ Set "name": "assets"
+▶️ use "workspace" to reference Phoenix dependencies
 
 ```json
 # /assets/package.json
 
 {
   "type": "module",
+  "name": "assets",
   "dependencies": {
     "fast-glob": "^3.3.3",
     "phoenix": "workspace:*",
