@@ -29,13 +29,13 @@ mix vite.install --css heroicons --css daisyui
 You can bring in what you want with the option flags `dep` or `dev-dep`.
 
 >[!WARNING]
-It is recommend to add packages manually, with:
+It is however recommended to add packages _manually_, with:
  `pnpm add (-D) xxx --prefix assets`.
 Indeed, `pnpm` can output warnings which you might miss. For example, in case you are using native `Node.js` addons which need to be compiled, you need to pass them to the field `onlyBuiltDependencies`. 
 
 The output is:
 
-```elixir
+```text
 Assets setup started for ex_streams (ExStreams)...
 [...]
 Assets installation completed!
